@@ -1,0 +1,11 @@
+.idea
+.vscode
+data
+*.sqlite3
+*.db
+
+core/__pycache__
+core/migrations/__pycache__
+core/services/__pycache__
+general/__pycache__
+
