@@ -1,24 +1,20 @@
 from core import models
+from core.repositories.software_repository import SoftwareRepository
+from core.serializers import SoftwareSerializer
 
 
 class SoftwareByNameService:
+    def __init__(self, software_repository: SoftwareRepository):
+        self.software_repository = software_repository
 
-    @staticmethod
-    def get_software_by_name(software_name: str):
-        software = models.Software.objects.filter(name=software_name).values().first()
-        return software
+    def get_software_by_name(self, software_name: str):
+        return self.software_repository.get_software_by_name(software_name)
 
-    @staticmethod
-    def put_software_by_name(software_name: str, validated_data: dict):
-        software = models.Software.objects.filter(name=software_name).update(**validated_data)
-        return software
+    def put_software_by_name(self, software_name: str, validated_data: dict):
+        return self.software_repository.put_software_by_name(software_name, validated_data)
 
-    @staticmethod
-    def patch_software_by_name(software_name: str, validated_data: dict):
-        patched_software = models.Software.objects.filter(name=software_name).update(**validated_data)
-        new_software_name = validated_data.get('name') or software_name
-        return models.Software.objects.filter(name=new_software_name).values().first()
+    def patch_software_by_name(self, software_name: str, validated_data: dict):
+        return self.software_repository.patch_software_by_name(software_name, validated_data)
 
-    @staticmethod
-    def delete_software_by_name(software_name: str):
-        models.Software.objects.filter(name=software_name).delete()
+    def delete_software_by_name(self, software_name: str):
+        self.software_repository.delete_software_by_name(software_name)

@@ -1,0 +1,1 @@
+from core.repositories.database_module import execute_query
