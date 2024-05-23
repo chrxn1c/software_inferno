@@ -1,0 +1,264 @@
+openapi: 3.0.1
+info:
+  title: Software Inferno
+  version: 1.0.0
+  description: Description of URIs and their methods to interact with system responsible for keeping track of installed software in the classrooms
+paths:
+  /software:
+    post:
+      tags:
+        - Software
+      summary: Add new software
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Software'
+
+      responses:
+        201:
+          description: Software has been successfully added
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Software'
+
+        400:
+          description: Bad request, the software hasn't been added
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+
+        422:
+          description: Required properties are missing
+
+    get:
+      tags:
+        - Software
+      summary: Get a list of all software installed
+      responses:
+        200:
+          description: A list of all software installed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllSoftwareResponse'
+
+        400:
+          description:  Bad request, couldn't get the list of software installed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+
+  /software/{software_name}:
+    get:
+      tags:
+        - Software
+      summary: Get information about chosen software
+      parameters:
+        - name: software_name
+          in: path
+          description: Unique software name
+          required: true
+          schema:
+            type: string
+
+      responses:
+        200:
+          description: Information about chosen software has been granted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Software'
+
+        400:
+          description: Information about chosen software hasn't been granted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+
+        422:
+          description: Required properties are missing
+
+    put:
+      tags:
+        - Software
+      summary: Entirely updates information about chosen software
+      parameters:
+        - name: software_name
+          in: path
+          description: Unique software name
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Software'
+
+      responses:
+        201:
+          description: Chosen software has successfully undergone total update
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Software'
+
+        400:
+          description: Bad request, couldn't have totally updated the chosen software
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+
+        422:
+          description: Required properties (which are all of them in this context) are missing.
+
+    patch:
+      tags:
+        - Software
+      summary: Update some properties about chosen software
+      parameters:
+        - name: software_name
+          in: path
+          description: Unique software name
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SoftwareBody'
+
+      responses:
+        201:
+          description: Chosen software has successfully undergone partial update
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Software'
+
+        400:
+          description: Bad request, couldn't have partially updated the chosen software
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+
+        422:
+          description: Required properties are missing. You have probably forgot to pass software's unique name as a query parameter
+
+    delete:
+      tags:
+        - Software
+      summary: Eradicates chosen software from the system
+      parameters:
+        - name: software_name
+          in: path
+          description: Unique software name
+          required: true
+          schema:
+            type: string
+
+      responses:
+          200:
+            description: Chosen software has been successfully deleted
+
+          400:
+            description: Bad request, couldn't have deleted the chosen software
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/ApiErrorResponse'
+
+          422:
+            description: Required properties are missing. You have probably forgot to pass software's unique name as a query parameter
+            content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/ApiErrorResponse'
+
+          404:
+            description: Chosen software is not present in the system
+            content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/ApiErrorResponse'
+
+
+components:
+  schemas:
+    Software:
+      type: object
+      properties:
+        name:
+          type: string
+          example: docker
+        version:
+          type: string
+          example: 4.29.0
+        description:
+          type: string
+          example: just like lxc, but has general engine responsible for balancing resources launched on your system
+        license_number:
+          type: string
+          example: open-source
+          nullable: true
+        developer_company:
+          type: string
+          example: Docker-Inc
+
+      required:
+        - name
+        - version
+        - description
+
+    SoftwareBody:
+      properties:
+        name:
+          type: string
+          example: docker
+          nullable: true
+        version:
+          type: string
+          example: 4.29.0
+          nullable: true
+        description:
+          type: string
+          example: just like lxc, but has general engine responsible for balancing resources launched on your system
+          nullable: true
+        license_number:
+          type: string
+          example: open-source
+          nullable: true
+        developer_company:
+          type: string
+          example: Docker-Inc
+          nullable: true
+
+    AllSoftwareResponse:
+      type: object
+      properties:
+        total_count:
+          type: number
+        software:
+          type: array
+          items:
+            $ref: '#/components/schemas/Software'
+
+    ApiErrorResponse:
+      type: object
+      properties:
+        description:
+          type: string
+        code:
+          type: string
+        exceptionName:
+          type: string
+        exceptionMessage:
+          type: string
