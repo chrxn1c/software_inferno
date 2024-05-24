@@ -163,4 +163,4 @@ class SoftwareViewSet(viewsets.ViewSet):
             return Response(error_response_data, status=status.HTTP_400_BAD_REQUEST)
 
         self.software_by_name_service.delete_software_by_name(software_name)
-        return Response(status=status.HTTP_200_OK)
+        return Response(data={}, status=status.HTTP_200_OK)
