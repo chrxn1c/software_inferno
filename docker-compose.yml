@@ -7,7 +7,7 @@ services:
       context: .
       dockerfile: infra/django/Dockerfile
     expose:
-      - "8000"
+      - 8000
     networks:
       [ software_inferno ]
 
@@ -16,8 +16,8 @@ services:
     build:
       context: .
       dockerfile: infra/nginx/Dockerfile
-    expose:
-      - "80"
+    ports:
+      - "8001:80"
     networks:
       [ software_inferno ]
     depends_on:
