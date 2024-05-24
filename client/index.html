@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Software Management</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        .status-icon {
+            font-size: 24px;
+            margin-left: 10px;
+        }
+    </style>
+    <script>
+        async function fetchData(endpoint, options = {}) {
+            const response = await fetch(endpoint, options);
+            let data = null;
+            if (response.status !== 204) {
+                data = await response.json();
+            }
+            if (!response.ok) {
+                throw new Error(data?.description || 'Something went wrong');
+            }
+            return data;
+        }
+
+        async function handleGetAllSoftware() {
+            try {
+                const data = await fetchData('http://localhost:8000/api/software');
+                document.getElementById('response').innerText = JSON.stringify(data, null, 2);
+                updateStatus(true);
+            } catch (error) {
+                document.getElementById('response').innerText = error.message;
+                updateStatus(false);
+            }
+        }
+
+        async function handleAddSoftware(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const software = Object.fromEntries(formData.entries());
+            try {
+                const data = await fetchData('http://localhost:8000/api/software', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(software)
+                });
+                document.getElementById('response').innerText = JSON.stringify(data, null, 2);
+                updateStatus(true);
+            } catch (error) {
+                document.getElementById('response').innerText = error.message;
+                updateStatus(false);
+            }
+        }
+
+        async function handleGetSoftware(event) {
+            event.preventDefault();
+            const softwareName = event.target.software_name.value;
+            try {
+                const data = await fetchData(`http://localhost:8000/api/software/${softwareName}`);
+                document.getElementById('response').innerText = JSON.stringify(data, null, 2);
+                updateStatus(true);
+            } catch (error) {
+                document.getElementById('response').innerText = error.message;
+                updateStatus(false);
+            }
+        }
+
+        async function handleUpdateSoftware(event) {
+            event.preventDefault();
+            const softwareName = event.target.software_name.value;
+            const formData = new FormData(event.target);
+            const software = Object.fromEntries(formData.entries());
+            try {
+                const data = await fetchData(`http://localhost:8000/api/software/${softwareName}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(software)
+                });
+                document.getElementById('response').innerText = JSON.stringify(data, null, 2);
+                updateStatus(true);
+            } catch (error) {
+                document.getElementById('response').innerText = error.message;
+                updateStatus(false);
+            }
+        }
+
+        async function handlePartialUpdateSoftware(event) {
+            event.preventDefault();
+            const softwareName = event.target.software_name.value;
+            const formData = new FormData(event.target);
+            const software = Object.fromEntries(formData.entries());
+            try {
+                const data = await fetchData(`http://localhost:8000/api/software/${softwareName}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(software)
+                });
+                document.getElementById('response').innerText = JSON.stringify(data, null, 2);
+                updateStatus(true);
+            } catch (error) {
+                document.getElementById('response').innerText = error.message;
+                updateStatus(false);
+            }
+        }
+
+        async function handleDeleteSoftware(event) {
+            event.preventDefault();
+            const softwareName = event.target.software_name.value;
+            try {
+                await fetchData(`http://localhost:8000/api/software/${softwareName}`, {
+                    method: 'DELETE'
+                });
+                document.getElementById('response').innerText = `Software ${softwareName} deleted successfully`;
+                updateStatus(true);
+            } catch (error) {
+                document.getElementById('response').innerText = error.message;
+                updateStatus(false);
+            }
+        }
+
+        function updateStatus(success) {
+            const statusIcon = document.getElementById('status-icon');
+            if (success) {
+                statusIcon.innerHTML = '<i class="fas fa-check-circle text-success status-icon"></i>';
+            } else {
+                statusIcon.innerHTML = '<i class="fas fa-times-circle text-danger status-icon"></i>';
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const statusIcon = document.getElementById('status-icon');
+            statusIcon.innerHTML = '<i class="fas fa-hourglass-half text-warning status-icon"></i>';
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1 class="my-4">Software Management</h1>
+
+        <h2>Get All Software</h2>
+        <button class="btn btn-primary mb-4" onclick="handleGetAllSoftware()">Get All Software</button>
+
+        <h2>Add New Software</h2>
+        <form onsubmit="handleAddSoftware(event)" class="mb-4">
+            <div class="form-group">
+                <label>Name:</label>
+                <input type="text" name="name" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label>Version:</label>
+                <input type="text" name="version" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label>Description:</label>
+                <input type="text" name="description" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label>License Number:</label>
+                <input type="text" name="license_number" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>Developer Company:</label>
+                <input type="text" name="developer_company" class="form-control">
+            </div>
+            <button type="submit" class="btn btn-success">Add Software</button>
+        </form>
+
+        <h2>Get Software</h2>
+        <form onsubmit="handleGetSoftware(event)" class="mb-4">
+            <div class="form-group">
+                <label>Software Name:</label>
+                <input type="text" name="software_name" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Get Software</button>
+        </form>
+
+        <h2>Update Software</h2>
+        <form onsubmit="handleUpdateSoftware(event)" class="mb-4">
+            <div class="form-group">
+                <label>Software Name:</label>
+                <input type="text" name="software_name" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label>Name:</label>
+                <input type="text" name="name" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>Version:</label>
+                <input type="text" name="version" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>Description:</label>
+                <input type="text" name="description" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>License Number:</label>
+                <input type="text" name="license_number" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>Developer Company:</label>
+                <input type="text" name="developer_company" class="form-control">
+            </div>
+            <button type="submit" class="btn btn-warning">Update Software</button>
+        </form>
+
+        <h2>Partial Update Software</h2>
+        <form onsubmit="handlePartialUpdateSoftware(event)" class="mb-4">
+            <div class="form-group">
+                <label>Software Name:</label>
+                <input type="text" name="software_name" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label>Name:</label>
+                <input type="text" name="name" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>Version:</label>
+                <input type="text" name="version" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>Description:</label>
+                <input type="text" name="description" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>License Number:</label>
+                <input type="text" name="license_number" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>Developer Company:</label>
+                <input type="text" name="developer_company" class="form-control">
+            </div>
+            <button type="submit" class="btn btn-info">Partial Update Software</button>
+        </form>
+
+        <h2>Delete Software</h2>
+        <form onsubmit="handleDeleteSoftware(event)" class="mb-4">
+            <div class="form-group">
+                <label>Software Name:</label>
+                <input type="text" name="software_name" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-danger">Delete Software</button>
+        </form>
+
+        <h2>Response <span id="status-icon"></span></h2>
+        <pre id="response" class="bg-light p-3 border"></pre>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
+</body>
+</html>
