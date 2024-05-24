@@ -1,6 +1,4 @@
-from core import models
 from core.repositories.software_repository import SoftwareRepository
-from core.serializers import SoftwareSerializer
 
 
 class SoftwareByNameService:

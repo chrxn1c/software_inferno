@@ -1,7 +1,5 @@
 from rest_framework import serializers
 
-from core.models import Software
-
 
 class SoftwareSerializer(serializers.Serializer):
     name = serializers.CharField(max_length=100)

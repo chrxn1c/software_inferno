@@ -1,0 +1,43 @@
+version: "3.9"
+
+services:
+  backend:
+    container_name: backend
+    build:
+      context: .
+      dockerfile: infra/django/Dockerfile
+    expose:
+      - 8000
+    networks:
+      [ software_inferno ]
+
+  webserver:
+    container_name: webserver
+    build:
+      context: .
+      dockerfile: infra/nginx/Dockerfile
+    expose:
+      - 80
+    networks:
+      [ software_inferno ]
+    depends_on:
+      - backend
+
+  frontend:
+    container_name: frontend
+    build:
+      context: .
+      dockerfile: infra/client/Dockerfile
+    volumes:
+      - ./client:/var/www/software_inferno.com/client
+    ports:
+      - "80:80"
+    networks:
+      [ software_inferno ]
+    depends_on:
+      - backend
+      - webserver
+
+networks:
+  software_inferno:
+    name: software_inferno

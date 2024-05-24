@@ -1,11 +1,11 @@
 .idea
 .vscode
 data
-*.sqlite3
-*.db
+api/*.sqlite3
+api/*.db
 
-core/__pycache__
-core/migrations/__pycache__
-core/services/__pycache__
-general/__pycache__
+api/core/__pycache__
+api/core/migrations/__pycache__
+api/core/services/__pycache__
+api/general/__pycache__
 

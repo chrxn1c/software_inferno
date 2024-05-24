@@ -1,10 +1,5 @@
-from rest_framework import status
-from rest_framework.exceptions import ValidationError
-
-from core import models
 from core.models import Software
 from core.repositories.software_repository import SoftwareRepository
-from core.serializers import SoftwareSerializer
 
 
 class SoftwareService:

@@ -1,9 +1,8 @@
 from rest_framework import viewsets, status
-from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 
 from core.repositories.software_repository import SoftwareRepository
-from core.serializers import SoftwareSerializer, APIErrorResponseSerializer, SoftwarePatchRequestSerializer
+from core.serializers import SoftwareSerializer, SoftwarePatchRequestSerializer
 from core.services.software_by_name_service import SoftwareByNameService
 from core.services.software_service import SoftwareService
 
