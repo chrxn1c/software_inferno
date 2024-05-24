@@ -7,8 +7,6 @@ from core.services.software_by_name_service import SoftwareByNameService
 from core.services.software_service import SoftwareService
 
 
-# Create your views here.
-
 class SoftwareViewSet(viewsets.ViewSet):
     software_repository = SoftwareRepository()
     software_service = SoftwareService(software_repository)

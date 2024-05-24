@@ -17,12 +17,6 @@ class SoftwarePatchRequestSerializer(serializers.Serializer):
     developer_company = serializers.CharField(max_length=30, required=False)
 
 
-# class SoftwareModelSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Software
-#         fields = '__all__'
-
-
 class APIErrorResponseSerializer(serializers.Serializer):
     description = serializers.CharField()
     code = serializers.CharField()
