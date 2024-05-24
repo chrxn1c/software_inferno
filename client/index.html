@@ -27,7 +27,7 @@
 
         async function handleGetAllSoftware() {
             try {
-                const data = await fetchData('http://localhost:8000/api/software');
+                const data = await fetchData('http://localhost/api/software');
                 document.getElementById('response').innerText = JSON.stringify(data, null, 2);
                 updateStatus(true);
             } catch (error) {
@@ -41,7 +41,7 @@
             const formData = new FormData(event.target);
             const software = Object.fromEntries(formData.entries());
             try {
-                const data = await fetchData('http://localhost:8000/api/software', {
+                const data = await fetchData('http://localhost/api/software', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -52,7 +52,7 @@
                 updateStatus(true);
             } catch (error) {
                 document.getElementById('response').innerText = error.message;
-                updateStatus(false);
+                updateStatus(false)
             }
         }
 
@@ -60,7 +60,7 @@
             event.preventDefault();
             const softwareName = event.target.software_name.value;
             try {
-                const data = await fetchData(`http://localhost:8000/api/software/${softwareName}`);
+                const data = await fetchData(`http://localhost/api/software/${softwareName}`);
                 document.getElementById('response').innerText = JSON.stringify(data, null, 2);
                 updateStatus(true);
             } catch (error) {
@@ -75,7 +75,7 @@
             const formData = new FormData(event.target);
             const software = Object.fromEntries(formData.entries());
             try {
-                const data = await fetchData(`http://localhost:8000/api/software/${softwareName}`, {
+                const data = await fetchData(`http://localhost/api/software/${softwareName}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'
@@ -96,7 +96,7 @@
             const formData = new FormData(event.target);
             const software = Object.fromEntries(formData.entries());
             try {
-                const data = await fetchData(`http://localhost:8000/api/software/${softwareName}`, {
+                const data = await fetchData(`http://localhost/api/software/${softwareName}`, {
                     method: 'PATCH',
                     headers: {
                         'Content-Type': 'application/json'
@@ -115,7 +115,7 @@
             event.preventDefault();
             const softwareName = event.target.software_name.value;
             try {
-                await fetchData(`http://localhost:8000/api/software/${softwareName}`, {
+                await fetchData(`http://localhost/api/software/${softwareName}`, {
                     method: 'DELETE'
                 });
                 document.getElementById('response').innerText = `Software ${softwareName} deleted successfully`;
