@@ -8,3 +8,5 @@ Software Inferno is a tool that allows you to keep track of all installed softwa
   ```bash
   $ docker compose -p "software_inferno" up -d 
   ```
+
+- Visit the http://localhost
