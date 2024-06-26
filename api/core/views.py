@@ -1,14 +1,11 @@
 from rest_framework import viewsets, status
-from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 
 from core.repositories.software_repository import SoftwareRepository
-from core.serializers import SoftwareSerializer, APIErrorResponseSerializer, SoftwarePatchRequestSerializer
+from core.serializers import SoftwareSerializer, SoftwarePatchRequestSerializer
 from core.services.software_by_name_service import SoftwareByNameService
 from core.services.software_service import SoftwareService
 
-
-# Create your views here.
 
 class SoftwareViewSet(viewsets.ViewSet):
     software_repository = SoftwareRepository()
@@ -164,4 +161,4 @@ class SoftwareViewSet(viewsets.ViewSet):
             return Response(error_response_data, status=status.HTTP_400_BAD_REQUEST)
 
         self.software_by_name_service.delete_software_by_name(software_name)
-        return Response(status=status.HTTP_200_OK)
+        return Response(data={}, status=status.HTTP_200_OK)

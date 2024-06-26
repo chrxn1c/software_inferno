@@ -1,7 +1,5 @@
 from rest_framework import serializers
 
-from core.models import Software
-
 
 class SoftwareSerializer(serializers.Serializer):
     name = serializers.CharField(max_length=100)
@@ -17,12 +15,6 @@ class SoftwarePatchRequestSerializer(serializers.Serializer):
     description = serializers.CharField(required=False)
     license_number = serializers.CharField(max_length=30, required=False)
     developer_company = serializers.CharField(max_length=30, required=False)
-
-
-# class SoftwareModelSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Software
-#         fields = '__all__'
 
 
 class APIErrorResponseSerializer(serializers.Serializer):

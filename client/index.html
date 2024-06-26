@@ -15,19 +15,15 @@
     <script>
         async function fetchData(endpoint, options = {}) {
             const response = await fetch(endpoint, options);
-            let data = null;
-            if (response.status !== 204) {
-                data = await response.json();
-            }
             if (!response.ok) {
-                throw new Error(data?.description || 'Something went wrong');
+                throw new Error((await response.json())?.description || 'Something went wrong');
             }
-            return data;
+            return response.status === 204 ? null : await response.json();
         }
 
         async function handleGetAllSoftware() {
             try {
-                const data = await fetchData('http://localhost:8000/api/software');
+                const data = await fetchData('/api/software');
                 document.getElementById('response').innerText = JSON.stringify(data, null, 2);
                 updateStatus(true);
             } catch (error) {
@@ -41,7 +37,7 @@
             const formData = new FormData(event.target);
             const software = Object.fromEntries(formData.entries());
             try {
-                const data = await fetchData('http://localhost:8000/api/software', {
+                const data = await fetchData('/api/software', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -60,7 +56,7 @@
             event.preventDefault();
             const softwareName = event.target.software_name.value;
             try {
-                const data = await fetchData(`http://localhost:8000/api/software/${softwareName}`);
+                const data = await fetchData(`/api/software/${softwareName}`);
                 document.getElementById('response').innerText = JSON.stringify(data, null, 2);
                 updateStatus(true);
             } catch (error) {
@@ -73,9 +69,10 @@
             event.preventDefault();
             const softwareName = event.target.software_name.value;
             const formData = new FormData(event.target);
-            const software = Object.fromEntries(formData.entries());
+            const softwareUpdates = Object.fromEntries(formData.entries());
+            const software = { name: softwareName, ...softwareUpdates };
             try {
-                const data = await fetchData(`http://localhost:8000/api/software/${softwareName}`, {
+                const data = await fetchData(`/api/software/${softwareName}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'
@@ -94,9 +91,10 @@
             event.preventDefault();
             const softwareName = event.target.software_name.value;
             const formData = new FormData(event.target);
-            const software = Object.fromEntries(formData.entries());
+            const softwareUpdates = Object.fromEntries(formData.entries());
+            const software = { name: softwareName, ...softwareUpdates };
             try {
-                const data = await fetchData(`http://localhost:8000/api/software/${softwareName}`, {
+                const data = await fetchData(`/api/software/${softwareName}`, {
                     method: 'PATCH',
                     headers: {
                         'Content-Type': 'application/json'
@@ -115,10 +113,10 @@
             event.preventDefault();
             const softwareName = event.target.software_name.value;
             try {
-                await fetchData(`http://localhost:8000/api/software/${softwareName}`, {
+                await fetchData(`/api/software/${softwareName}`, {
                     method: 'DELETE'
                 });
-                document.getElementById('response').innerText = `Software ${softwareName} deleted successfully`;
+                document.getElementById('response').innerText = '';
                 updateStatus(true);
             } catch (error) {
                 document.getElementById('response').innerText = error.message;
@@ -189,24 +187,24 @@
                 <input type="text" name="software_name" class="form-control" required>
             </div>
             <div class="form-group">
-                <label>Name:</label>
-                <input type="text" name="name" class="form-control">
+                <label>New Software Name:</label>
+                <input type="text" name="new_name" class="form-control">
+                 </div>
+            <div class="form-group">
+                <label>New Software Version:</label>
+                <input type="text" name="new_version" class="form-control">
             </div>
             <div class="form-group">
-                <label>Version:</label>
-                <input type="text" name="version" class="form-control">
+                <label>New Software Description:</label>
+                <input type="text" name="new_description" class="form-control">
             </div>
             <div class="form-group">
-                <label>Description:</label>
-                <input type="text" name="description" class="form-control">
+                <label>New Software License Number:</label>
+                <input type="text" name="new_license_number" class="form-control">
             </div>
             <div class="form-group">
-                <label>License Number:</label>
-                <input type="text" name="license_number" class="form-control">
-            </div>
-            <div class="form-group">
-                <label>Developer Company:</label>
-                <input type="text" name="developer_company" class="form-control">
+                <label>New Software Developer Company:</label>
+                <input type="text" name="new_developer_company" class="form-control">
             </div>
             <button type="submit" class="btn btn-warning">Update Software</button>
         </form>
@@ -218,24 +216,24 @@
                 <input type="text" name="software_name" class="form-control" required>
             </div>
             <div class="form-group">
-                <label>Name:</label>
-                <input type="text" name="name" class="form-control">
+                <label>New Software Name:</label>
+                <input type="text" name="new_name" class="form-control">
             </div>
             <div class="form-group">
-                <label>Version:</label>
-                <input type="text" name="version" class="form-control">
+                <label>New Software Version:</label>
+                <input type="text" name="new_version" class="form-control">
             </div>
             <div class="form-group">
-                <label>Description:</label>
-                <input type="text" name="description" class="form-control">
+                <label>New Software Description:</label>
+                <input type="text" name="new_description" class="form-control">
             </div>
             <div class="form-group">
-                <label>License Number:</label>
-                <input type="text" name="license_number" class="form-control">
+                <label>New Software License Number:</label>
+                <input type="text" name="new_license_number" class="form-control">
             </div>
             <div class="form-group">
-                <label>Developer Company:</label>
-                <input type="text" name="developer_company" class="form-control">
+                <label>New Software Developer Company:</label>
+                <input type="text" name="new_developer_company" class="form-control">
             </div>
             <button type="submit" class="btn btn-info">Partial Update Software</button>
         </form>
@@ -249,7 +247,7 @@
             <button type="submit" class="btn btn-danger">Delete Software</button>
         </form>
 
-        <h2>Response <span id="status-icon"></span></h2>
+        <h2>Response <span id="status-icon"><i class="fas fa-hourglass-half text-warning status-icon"></i></span></h2>
         <pre id="response" class="bg-light p-3 border"></pre>
     </div>
 
@@ -259,3 +257,4 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
 </body>
 </html>
+

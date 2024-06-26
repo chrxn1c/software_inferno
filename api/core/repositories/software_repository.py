@@ -50,7 +50,6 @@ class SoftwareRepository:
         new_software_license_number = validated_data.get('license_number', None) or gotten_software.license_number
         new_software_developer_company = validated_data.get('developer_company', None) or gotten_software.developer_company
 
-        print(new_software_name)
         result = execute_query("UPDATE software SET name = ?, version = ?, description = ?, license_number = ?, developer_company = ? WHERE name = ?",(
             new_software_name,
             new_software_version,
